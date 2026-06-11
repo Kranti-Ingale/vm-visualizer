@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VMVisualizer — Virtual Memory &amp; Address Translation Simulator</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="app-header">
+  <h1>VMVisualizer</h1>
+  <span class="subtitle">Virtual Memory &amp; Address Translation — interactive teaching simulator</span>
+</header>
+
+<!-- ============================ CONFIG BAR ============================ -->
+<section class="config-bar" id="configBar">
+  <div class="field">
+    <label>Example</label>
+    <select id="exampleSelect"><option value="">— choose —</option></select>
+  </div>
+  <div class="field"><label>Virtual Addr Space</label>
+    <input id="vas" type="text" value="64KB" placeholder="e.g. 64KB, 1MB, 65536">
+  </div>
+  <div class="field"><label>Physical Addr Space</label>
+    <input id="pas" type="text" value="16KB" placeholder="e.g. 16KB, 256KB">
+  </div>
+  <div class="field"><label>Page Size</label>
+    <input id="pageSize" type="text" value="1KB" placeholder="e.g. 1KB, 256B, 4096">
+  </div>
+  <div class="field"><label>PTE Size (multilevel only)</label>
+    <input id="pteSize" type="text" value="128B" placeholder="optional · e.g. 4B" style="width:9rem">
+  </div>
+  <div class="field"><label>TLB Entries</label>
+    <input id="tlbEntries" type="number" min="1" max="64" value="4">
+  </div>
+  <div class="field"><label>TLB Policy</label>
+    <select id="tlbPolicy"><option>FIFO</option><option selected>LRU</option></select>
+  </div>
+  <div class="field"><label>Page Replacement</label>
+    <select id="replPolicy"><option selected>FIFO</option><option>LRU</option></select>
+  </div>
+  <div class="field"><label>Page-Table Levels (1–3)</label>
+    <input id="levels" type="number" min="1" max="3" value="1" style="width:4.5rem">
+  </div>
+  <div class="cfg-buttons">
+    <button id="applyBtn" class="primary">Apply Configuration</button>
+    <button id="clearCfgBtn" class="ghost">Clear Config</button>
+  </div>
+  <div id="addrSummary" class="addr-summary"></div>
+  <div id="configError" class="config-error"></div>
+</section>
+
+<!-- ============== TOP ROW: requests + controls (left) · breakdown (right) === -->
+<section class="toprow">
+  <div class="toprow-left">
+    <div class="request-bar">
+      <div class="field"><label>Add request(s) — hex or dec, comma-separated</label>
+        <input id="reqInput" type="text" placeholder="e.g. 0x0405, 0x0801, 1029">
+      </div>
+      <button id="addReqBtn">Add</button>
+      <button id="genBtn">Generate Sample (10)</button>
+      <button id="clearReqBtn" class="ghost">Clear</button>
+      <div class="queue" id="reqQueue"></div>
+    </div>
+    <div class="controls">
+      <button id="prevBtn">◀ Prev</button>
+      <button id="nextBtn" class="primary">Next Step ▶</button>
+      <button id="runBtn">Run ▶▶</button>
+      <button id="pauseBtn">Pause ⏸</button>
+      <button id="resetBtn" class="ghost">Reset ↺</button>
+      <label class="speed">Speed<input id="speed" type="range" min="200" max="2000" step="100" value="900"></label>
+      <span id="progress" class="progress"></span>
+    </div>
+  </div>
+
+  <section class="panel breakdown-top" id="panel-breakdown">
+    <h2>Address Translation Breakdown</h2>
+    <div class="panel-body" id="breakdownView"></div>
+  </section>
+</section>
+
+<!-- ============== SLIM EXPLANATION BAR (always visible, no scrolling) ======= -->
+<section class="infobar">
+  <span class="step-badge" id="stepBadge">Ready</span>
+  <span class="info-text" id="infoText">Apply a configuration and add requests, then press <b>Next Step</b>.</span>
+  <span class="concept" id="conceptText"></span>
+</section>
+
+<!-- ============== VIEWS: stacked for a clear top → bottom flow =============== -->
+<main class="grid">
+  <section class="panel" id="panel-physical">
+    <h2>1 · Physical Memory <span class="tag" id="replPolicyTag"></span></h2><div class="panel-body" id="physicalView"></div>
+  </section>
+
+  <section class="panel" id="panel-tlb">
+    <h2>2 · TLB <span class="tag" id="tlbPolicyTag"></span></h2><div class="panel-body" id="tlbView"></div>
+  </section>
+
+  <section class="panel full" id="panel-pagetable">
+    <h2>3 · Page Table <span class="tag" id="ptLevelsTag"></span></h2><div class="panel-body" id="pageTableView"></div>
+  </section>
+</main>
+
+<!-- ============================ STATISTICS ============================ -->
+<section class="bottom">
+  <div class="panel stats" id="panel-stats">
+    <h2>Statistics</h2>
+    <div class="stats-grid" id="statsView"></div>
+  </div>
+</section>
+
+<footer class="app-footer">© 2026 Kranti Ingale, IIT Madras · Educational Virtual Memory Visualization Tool · MIT License · <a href="https://github.com/Kranti-Ingale/vm-visualizer">source</a></footer>
+
+<script src="js/engine.js"></script>
+<script src="js/examples.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
